@@ -1,0 +1,80 @@
+<!DOCTYPE html >
+    <html>
+    <head>
+    <meta charset = "utf-8"/>
+    <style>
+    body 
+	{
+        background - color: #ffffff;
+        margin: 0;
+        overflow: hidden;
+    } </style> </head>
+    <body>
+<!--- https://ajax.googleapis.com/ajax/libs/threejs/r76/three.min.js -->
+<script src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/95/three.min.js"> </script>
+<script>
+//Creacion de variables de la escena
+var camera, scene, renderer;
+var geometria, material, mesh;
+var clock;
+function cono(x, y, z, px, py, pz, material, color, wf)
+{
+    geometria = new THREE.ConeGeometry( x, y, z );
+    switch(material) 
+    {
+		//Casos para elegir el Material del cubo
+    	case 'Basic': material = new THREE.MeshBasicMaterial({color: color, wireframe: wf}); break;
+    	case 'Standard': material = new THREE.MeshStandardMaterial({color: color, wireframe: wf}); break;
+    	case 'Physical': material = new THREE.MesPhysicalMaterial({color: color, wireframe: wf}); break;
+    	case 'Phong': material = new THREE.MeshPhongMaterial({color: color, wireframe: wf}); break;
+    	case 'Lambert': material = new THREE.MeshLambertMaterial({color: color, wireframe: wf}); break;
+    }
+    cone = new THREE.Mesh( geometria, material );
+    scene.add(cone);
+    cone.position.set(px, py, pz);
+    return cone;
+}
+
+
+//Funcion principal
+function init() 
+{
+	//Paso 1: Creacion y renderizado de la escena
+    renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth*0.99, window.innerHeight*0.99);
+    document.body.appendChild(renderer.domElement);
+    scene = new THREE.Scene();
+	//Paso 2: Arreglo de cubos y la cantidad de cubos a crear
+    var arrCube = [];
+	var numCubos= 3;
+    var arrCone = [];
+    var z=12, x=5,y=7.5 //dimensiones del Cono x = radio, y = altura, z = division en segmentos el cono
+    arrCone.push(cono(x, y, z, 0,0,0,'Phong', 'red', false))
+
+
+    var t = 2;   // Valor de lado del cubo mayor
+    var angulo = Math.PI/2;
+
+    const axesHelper = new THREE.AxesHelper(30);
+    scene.add(axesHelper);
+    arrCone[0].rotateX(angulo); //Rota 90° el cono con respecto al eje X
+    //arrCone[0].rotateY(360);
+    arrCone[0].position.set(0, 0, y/2); //Cambia la posicion del cono para ubicar su base en el plano YZ
+
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(5, 10, 10);
+    camera.lookAt(scene.position);
+
+
+	var light = new THREE.PointLight(0xFFFFFF);
+	light.position.set(-5, 87, 20);
+	scene.add(light);
+
+    renderer.render(scene, camera);
+}
+
+init();
+
+</script>
+</body>
+</html>
